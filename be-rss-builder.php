@@ -30,6 +30,8 @@ class BE_RSS_Builder {
 
 	public $settings_page = 'be_rss_builder';
 
+	public $rss_post_title_key = 'be_rss_post_title';
+
 	public function __construct() {
 
 		// Settings Page
@@ -44,6 +46,11 @@ class BE_RSS_Builder {
 		add_action( 'rss2_ns', array( $this, 'rss_media_namespace' ) );
 		add_filter( 'wp_calculate_image_srcset', array( $this, 'disable_srcset_in_feed' ) );
 		add_action( 'rss2_item', array( $this, 'rss_media_content' ) );
+
+		// Metabox
+		add_action( 'add_meta_boxes', array( $this, 'metabox_register' )         );
+		add_action( 'save_post',      array( $this, 'metabox_save'     ),  1, 2  );
+
 	}
 
 	/**
@@ -382,7 +389,7 @@ class BE_RSS_Builder {
 	 *
 	 */
 	public function the_title_rss( $title ) {
-		$alt_title = ea_cf( 'ea_rss_title' );
+		$alt_title = esc_html( get_post_meta( get_the_ID(), $this->rss_post_title_key, true ) );
 		return !empty( $alt_title ) ? $alt_title : $title;
 	}
 
@@ -443,6 +450,76 @@ class BE_RSS_Builder {
 			$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), $image_size );
 			echo '<media:content url="' . $image[0] . '" width="' . $image[1] . '" height="' . $image[2] . '" medium="image" />';
 
+		}
+	}
+
+	/**
+	 * Register metabox
+	 *
+	 */
+	function metabox_register() {
+
+		$post_types = apply_filters( 'be_rss_builder_post_types', array( 'post' ) );
+
+		// Add metabox for each post type found
+		foreach ( $post_types as $post_type ) {
+			add_meta_box( 'be_rss_builder', 'RSS Post Title', array( $this, 'metabox_render' ), $post_type, 'normal', 'high' );
+		}
+	}
+
+	/**
+	 * Output the metabox
+	 *
+	 * @since 1.6.0
+	 */
+	function metabox_render() {
+
+		$current = get_post_meta( get_the_ID(), $this->rss_post_title_key, true );
+
+		// Security nonce
+		wp_nonce_field( 'be_rss_builder', 'be_rss_builder_nonce' );
+
+		echo '<p><label for="' . $this->rss_post_title_key . '">RSS Post Title</label>';
+		echo '<input class="widefat" type="text" id="' . $this->rss_post_title_key . '" name="' . $this->rss_post_title_key . '" value="' . esc_attr( $current ) . '" />';
+		echo '</p>';
+
+	}
+
+	/**
+	 * Handle metabox saves
+	 *
+	 * @since 1.6.0
+	 */
+	function metabox_save( $post_id, $post ) {
+
+		// Security check
+		if ( ! isset( $_POST['be_rss_builder_nonce'] ) || ! wp_verify_nonce( $_POST['be_rss_builder_nonce'], 'be_rss_builder' ) ) {
+			return;
+		}
+
+		// Bail out if running an autosave, ajax, cron.
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			return;
+		}
+		if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
+			return;
+		}
+
+		// Bail out if the user doesn't have the correct permissions to update the slider.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		$value = esc_attr( $_POST[ $this->rss_post_title_key ] );
+
+		// Either save or delete they post meta
+		if ( !empty( $value ) ) {
+			update_post_meta( $post_id, $this->rss_post_title_key, $value );
+		} else {
+			delete_post_meta( $post_id, $this->rss_post_title_key );
 		}
 	}
 }
