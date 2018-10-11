@@ -6,6 +6,8 @@
  * Author:      Bill Erickson
  * Author URI: https://www.billerickson.net
  * Plugin URI: https://github.com/billerickson/be-rss-builder/
+ * GitHub URI: billerickson/be-rss-builder
+
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License version 2, as published by the
@@ -50,6 +52,9 @@ class BE_RSS_Builder {
 		// Metabox
 		add_action( 'add_meta_boxes', array( $this, 'metabox_register' )         );
 		add_action( 'save_post',      array( $this, 'metabox_save'     ),  1, 2  );
+
+		// GitHub Updater
+		include( dirname( __FILE__ ) . '/github-updater.php' );
 
 	}
 
