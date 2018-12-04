@@ -45,7 +45,6 @@ class BE_RSS_Builder {
 		add_filter( 'the_title_rss', array( $this, 'the_title_rss' ) );
 		add_filter( 'the_excerpt_rss', array( $this, 'image_in_rss_content' ) );
 		add_filter( 'the_content_feed', array( $this, 'image_in_rss_content' ) );
-		add_action( 'rss2_ns', array( $this, 'rss_media_namespace' ) );
 		add_filter( 'wp_calculate_image_srcset', array( $this, 'disable_srcset_in_feed' ) );
 		add_action( 'rss2_item', array( $this, 'rss_media_content' ) );
 
@@ -419,14 +418,6 @@ class BE_RSS_Builder {
 			$content = get_the_post_thumbnail( $post->ID, $image_size ) . $content;
 		}
 		return $content;
-	}
-
-	/**
-	 * Add media namespace
-	 *
-	 */
-	function rss_media_namespace() {
-	  echo 'xmlns:media="http://search.yahoo.com/mrss/"'."\n";
 	}
 
 	/**
