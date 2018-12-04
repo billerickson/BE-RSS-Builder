@@ -110,13 +110,9 @@ class BE_RSS_Builder {
 			'label' => 'Limit to category:',
 			'name'  => 'category',
 			'empty' => 'All Categories',
-			'options' => array()
+			'taxonomy' => 'category',
 		);
-		$terms = get_terms( array( 'taxonomy' => 'category' ) );
-		foreach( $terms as $term ) {
-			$category_settings['options'][ $term->slug ] = $term->name;
-		}
-		$this->build_dropdown( $category_settings );
+		$this->build_term_dropdown( $category_settings );
 
 		// Orderby
 		$this->build_dropdown( array(
@@ -173,10 +169,13 @@ class BE_RSS_Builder {
 			'name' => 'no_newsletter',
 		));
 
+		// Exclude by date
 		$this->build_text_input( array(
 			'label'	=> 'Exclude posts older than',
 			'name'	=> 'date',
 		));
+
+		// Exclude by category
 
 		// Form Submit
 		echo '<p><button type="submit" class="button">Get Feed URL</button>';
@@ -273,6 +272,21 @@ class BE_RSS_Builder {
 			echo '<option value="' . $value . '"' . selected( $value, $current, false ) . '>' . $label . '</option>';
 		}
 		echo '</select></p>';
+	}
+
+	/**
+	 * Build term dropdown on a settings page
+	 *
+	 */
+	public function build_term_dropdown( $args ) {
+
+		$args['options'] = array();
+		$terms = get_terms( array( 'taxonomy' => $args['taxonomy'] ) );
+		foreach( $terms as $term ) {
+			$args['options'][ $term->slug ] = $term->name;
+		}
+
+		$this->build_dropdown( $args );
 	}
 
 	/**
