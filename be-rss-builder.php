@@ -356,11 +356,6 @@ class BE_RSS_Builder {
 			if( empty( $settings ))
 				return;
 
-			// Category
-			if( !empty( $settings['category'] ) ) {
-				$query->set( 'category_name', esc_attr( $settings['category'] ) );
-			}
-
 			// Orderby
 			if( !empty( $settings['orderby'] ) ) {
 				$query->set( 'orderby', esc_attr( $settings['orderby'] ) );
@@ -384,12 +379,32 @@ class BE_RSS_Builder {
 			if( !empty( $date_query ) )
 				$query->set( 'date_query', $date_query );
 
+			// Tax Query
+			$tax_query = array();
 
-			// No Newsletter tag
+			// -- Category
+			if( !empty( $settings['category'] ) ) {
+				$tax_query[] = array(
+					'taxonomy'	=> 'category',
+					'field'		=> 'slug',
+					'terms'		=> $settings['category'],
+				);
+			}
+
+			// -- No Newsletter
 			if( !empty( $settings['no_newsletter'] ) && 'on' == $settings['no_newsletter'] ) {
 				$no_newsletter_term_id = apply_filters( 'ea_no_newsletter_term_id', 18790 );
-				$query->set( 'tag__not_in', array( $no_newsletter_term_id ) );
+				$tax_query[] = array(
+					'taxonomy'	=> 'post_tag',
+					'field'		=> 'term_id',
+					'terms'		=> $no_newsletter_term_id,
+				);
 			}
+
+			// -- Apply tax query
+			if( !empty( $tax_query ) )
+				$query->set( 'tax_query', $tax_query );
+
 		}
 	}
 
