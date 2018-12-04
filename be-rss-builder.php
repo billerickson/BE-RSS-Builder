@@ -106,13 +106,12 @@ class BE_RSS_Builder {
 		echo '<input type="hidden" name="page" value="' . $this->settings_page . '" />';
 
 		// Category
-		$category_settings = array(
-			'label' => 'Limit to category:',
-			'name'  => 'category',
-			'empty' => 'All Categories',
-			'taxonomy' => 'category',
-		);
-		$this->build_term_dropdown( $category_settings );
+		$this->build_term_dropdown( array(
+			'label'		=> 'Limit to category:',
+			'name'		=> 'category',
+			'empty'		=> 'All Categories',
+			'taxonomy'	=> 'category',
+		) );
 
 		// Orderby
 		$this->build_dropdown( array(
@@ -176,6 +175,21 @@ class BE_RSS_Builder {
 		));
 
 		// Exclude by category
+		$this->build_term_dropdown( array(
+			'label'		=> 'Exclude posts in category:',
+			'name'		=> 'exclude_category',
+			'empty'		=> '(None)',
+			'taxonomy'	=> 'category',
+		) );
+
+		// Exclude by tag
+		$this->build_term_dropdown( array(
+			'label'		=> 'Exclude posts in tag:',
+			'name'		=> 'exclude_tag',
+			'empty'		=> '(None)',
+			'taxonomy'	=> 'post_tag',
+		) );
+
 
 		// Form Submit
 		echo '<p><button type="submit" class="button">Get Feed URL</button>';
@@ -412,6 +426,27 @@ class BE_RSS_Builder {
 					'taxonomy'	=> 'post_tag',
 					'field'		=> 'term_id',
 					'terms'		=> $no_newsletter_term_id,
+					'operator'	=> 'NOT IN',
+				);
+			}
+
+			// -- Exclude category
+			if( !empty( $settings['exclude_category'] ) ) {
+				$tax_query[] = array(
+					'taxonomy'	=> 'category',
+					'field'		=> 'slug',
+					'terms'		=> $settings['exclude_category'],
+					'operator' 	=> 'NOT IN',
+				);
+			}
+
+			// -- Exclude trag
+			if( !empty( $settings['exclude_tag'] ) ) {
+				$tax_query[] = array(
+					'taxonomy'	=> 'post_tag',
+					'field'		=> 'slug',
+					'terms'		=> $settings['exclude_tag'],
+					'operator' 	=> 'NOT IN',
 				);
 			}
 
