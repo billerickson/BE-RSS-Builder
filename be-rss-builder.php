@@ -157,18 +157,6 @@ class BE_RSS_Builder {
 			)
 		));
 
-		// Date Query
-		$this->build_dropdown( array(
-			'label' => 'Published After',
-			'name' => 'date',
-			'empty' => '(All Posts)',
-			'options' => array(
-				'1 day ago' => '1 day ago',
-				'1 month ago' => '1 month ago',
-				'1 year ago' => '1 year ago',
-			)
-		));
-
 		// Thumbnail Size
 		$this->build_dropdown( array(
 			'label' => 'Thumbnail Size',
@@ -177,10 +165,17 @@ class BE_RSS_Builder {
 			'options' => $this->image_size_options()
 		));
 
+		echo '<h2>Exclude</h2>';
+
 		// Exclude "no newsletter" tag
 		$this->build_checkbox( array(
 			'label' => 'Exclude posts tagged "no-newsletter"',
 			'name' => 'no_newsletter',
+		));
+
+		$this->build_text_input( array(
+			'label'	=> 'Exclude posts older than',
+			'name'	=> 'date',
 		));
 
 		// Form Submit
@@ -292,6 +287,17 @@ class BE_RSS_Builder {
 	}
 
 	/**
+	 * Build a text input on settings page
+	 *
+	 */
+	public function build_text_input( $args ) {
+		echo '<p>';
+		$this->field_label( $args );
+		echo '<input type="text" name="' . $this->field_name( $args ) . '" value="' . $this->field_current( $args ) . '" />';
+		echo '</p>';
+	}
+
+	/**
 	 * Get current value for field
 	 *
 	 */
@@ -371,14 +377,13 @@ class BE_RSS_Builder {
 				$query->set( 'offset', intval( $settings['offset'] ) );
 
 			// Date
+			$date_query = array();
 			if( !empty( $settings['date'] ) ) {
-				$date_query = array(
-					array(
-						'after' => $settings['date']
-					)
-				);
-				$query->set( 'date_query', $date_query );
+				$date_query[] = array( 'after' => $settings['date'] );
 			}
+			if( !empty( $date_query ) )
+				$query->set( 'date_query', $date_query );
+
 
 			// No Newsletter tag
 			if( !empty( $settings['no_newsletter'] ) && 'on' == $settings['no_newsletter'] ) {
