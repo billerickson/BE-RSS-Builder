@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BE RSS Builder
  * Description: Allows you to build custom RSS feeds for email marketing
- * Version:     1.0.0
+ * Version:     1.1.0
  * Author:      Bill Erickson
  * Author URI: https://www.billerickson.net
  * Plugin URI: https://github.com/billerickson/be-rss-builder/
