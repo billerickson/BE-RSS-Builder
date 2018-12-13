@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BE RSS Builder
  * Description: Allows you to build custom RSS feeds for email marketing
- * Version:     1.1.0
+ * Version:     1.2.0
  * Author:      Bill Erickson
  * Author URI: https://www.billerickson.net
  * Plugin URI: https://github.com/billerickson/be-rss-builder/
@@ -175,20 +175,16 @@ class BE_RSS_Builder {
 		));
 
 		// Exclude by category
-		$this->build_term_dropdown( array(
-			'label'		=> 'Exclude posts in category:',
-			'name'		=> 'exclude_category',
-			'empty'		=> '(None)',
-			'taxonomy'	=> 'category',
-		) );
+		$this->build_text_input( array(
+			'label' => 'Exclude posts in category',
+			'name'	=> 'exclude_category',
+		));
 
 		// Exclude by tag
-		$this->build_term_dropdown( array(
-			'label'		=> 'Exclude posts in tag:',
-			'name'		=> 'exclude_tag',
-			'empty'		=> '(None)',
-			'taxonomy'	=> 'post_tag',
-		) );
+		$this->build_text_input( array(
+			'label' => 'Exclude posts in tag',
+			'name'	=> 'exclude_tag',
+		));
 
 
 		// Form Submit
@@ -351,6 +347,19 @@ class BE_RSS_Builder {
 	}
 
 	/**
+	 * String to array
+	 *
+	 */
+	public function string_to_array( $text ) {
+
+		// convert comma-space to comma
+		$text = str_replace( ', ', ',', $text );
+
+		// convert to array using comma
+		return explode( ',', $text );
+	}
+
+	/**
 	 * Image size options
 	 *
 	 */
@@ -435,7 +444,7 @@ class BE_RSS_Builder {
 				$tax_query[] = array(
 					'taxonomy'	=> 'category',
 					'field'		=> 'slug',
-					'terms'		=> $settings['exclude_category'],
+					'terms'		=> $this->string_to_array( $settings['exclude_category'] ),
 					'operator' 	=> 'NOT IN',
 				);
 			}
@@ -445,7 +454,7 @@ class BE_RSS_Builder {
 				$tax_query[] = array(
 					'taxonomy'	=> 'post_tag',
 					'field'		=> 'slug',
-					'terms'		=> $settings['exclude_tag'],
+					'terms'		=> $this->string_to_array( $settings['exclude_tag'] ),
 					'operator' 	=> 'NOT IN',
 				);
 			}
