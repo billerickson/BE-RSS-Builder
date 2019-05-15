@@ -364,7 +364,7 @@ class BE_RSS_Builder {
 	 *
 	 */
 	public function image_size_options() {
-		global $_wp_additional_image_sizes;
+		$additional_sizes = wp_get_additional_image_sizes();
 		$sizes = array(
 			'thumbnail' => array(
 				'width'   => intval( get_option( 'thumbnail_size_w' ) ),
@@ -372,7 +372,7 @@ class BE_RSS_Builder {
 				'crop'    => 1,
 			),
 		);
-		$sizes = array_merge( $sizes, $_wp_additional_image_sizes );
+		$sizes = array_merge( $sizes, $additional_sizes );
 
 		$output = array();
 		foreach( $sizes as $size => $settings ) {
