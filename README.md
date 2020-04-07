@@ -11,7 +11,7 @@ Build custom RSS feeds for email marketing. Go to Settings > RSS Builder to crea
 
 After making your selections, click "Get Feed URL" and copy the URL at the top of the page.
 
-![screenshot](https://d16rm1n165bd05.cloudfront.net/items/0P063m3z0y3m1n010F12/Screen%20Shot%202019-05-15%20at%2011.19.19%20AM.png?X-CloudApp-Visitor-Id=78955b2d79e4b4c9650076a91b4db727&v=bc51a953)
+![screenshot](https://p198.p4.n0.cdn.getcloudapp.com/items/yAuvpjO2/Image%202020-04-07%20at%2010.34.39%20AM.png?v=edef383fd16d250b02eee65681a09f01)
 
 ### Customization Options
 
