@@ -522,7 +522,7 @@ class BE_RSS_Builder {
 				$image_size = esc_attr( $settings['image_size'] );
 
 			$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), $image_size );
-			echo '<media:content url="' . $image[0] . '" width="' . $image[1] . '" height="' . $image[2] . '" medium="image" />';
+			echo '<media:content xmlns:media="http://search.yahoo.com/mrss/" medium="image" type="image/jpeg" url="' . $image[0] . '" width="' . $image[1] . '" height="' . $image[2] . '" />';
 
 		}
 	}
