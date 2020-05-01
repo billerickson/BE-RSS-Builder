@@ -43,8 +43,8 @@ class BE_RSS_Builder {
 		// Customize RSS Feed
 		add_action( 'pre_get_posts', array( $this, 'rss_query' ) );
 		add_filter( 'the_title_rss', array( $this, 'the_title_rss' ) );
-		add_filter( 'the_excerpt_rss', array( $this, 'image_in_rss_content' ) );
-		add_filter( 'the_content_feed', array( $this, 'image_in_rss_content' ) );
+		//add_filter( 'the_excerpt_rss', array( $this, 'image_in_rss_content' ) );
+		//add_filter( 'the_content_feed', array( $this, 'image_in_rss_content' ) );
 		add_filter( 'wp_calculate_image_srcset', array( $this, 'disable_srcset_in_feed' ) );
 		add_action( 'rss2_item', array( $this, 'rss_media_content' ) );
 
